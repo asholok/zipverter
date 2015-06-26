@@ -10,9 +10,7 @@ class ZipTableResource(resources.ModelResource):
         allowed_methods = ['get', 'post']
         always_return_data = True
 
-    def obj_create(self, bundle, request=None, **kwargs):
-        zip_code = bundle.data['zip']
-        country = bundle.data['country']
+    def __create_location(self, zip_code, country):
         city = find_city(zip_code, country)
 
         if city:
@@ -31,6 +29,6 @@ class ZipTableResource(resources.ModelResource):
         if filtered:
             Meta.queryset = filtered
         else:
-            self.obj_create(bundle)
+            self.create_location()
 
 
