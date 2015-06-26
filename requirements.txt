@@ -1,0 +1,41 @@
+sudo pip install django
+sudo pip install django-tastypie
+sudo pip install django-cities
+sudo pip install psycopg2
+sudo apt-get install binutils libproj-dev gdal-bin
+
+wget http://download.osgeo.org/geos/geos-3.4.2.tar.bz2
+tar xjf geos-3.4.2.tar.bz2
+cd geos-3.4.2
+./configure
+make
+sudo make install
+cd ..
+
+wget http://download.osgeo.org/proj/proj-4.9.1.tar.gz
+wget http://download.osgeo.org/proj/proj-datumgrid-1.5.tar.gz
+tar xzf proj-4.9.1.tar.gz
+cd proj-4.9.1/nad
+tar xzf ../../proj-datumgrid-1.5.tar.gz
+cd ..
+./configure
+make
+sudo make install
+cd ..
+
+wget http://download.osgeo.org/postgis/source/postgis-2.1.5.tar.gz
+tar xzf postgis-2.1.5.tar.gz
+cd postgis-2.1.5
+./configure
+make
+sudo make install
+cd ..
+
+#		sudo su - postgres
+#		cdeatedb yourdatabase
+#		psql -d yourdatabase -c "CREATE EXTENSION postgis;"
+#		psql -d yourdatabase -c "CREATE EXTENSION postgis_topology;"
+#		psql -d yourdatabase -c "CREATE EXTENSION fuzzystrmatch;"
+#		psql -d yourdatabase -c "CREATE EXTENSION postgis_tiger_geocoder;"
+#
+#		python manage.py cities --force --import=all
