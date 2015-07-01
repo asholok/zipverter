@@ -5,14 +5,20 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script type="text/javascript">
         function getCity() {
+            var postal_code = $('#zip').val();
+            var country_name = $('#country').val();
+
             $.ajax({
-                type: "POST",
+                type: 'POST',
                 url: '/api/zip_table/',
-                data: {
-                    zip: $('#zip').val(),
-                    country: $('#country').val()
-                },
-                success: showData
+                data: JSON.stringify({
+                    zip_code: postal_code, 
+                    country: country_name
+                }),
+                success: showData(),
+                dataType: "application/json",
+                processData:  false,
+                contentType: "application/json"
             });
         }
 
@@ -24,7 +30,7 @@
             $.ajax({
                 type: 'POST',
                 url: '/api/zip_table/',
-                data: JSON.stringify({zip_code: '90210', country: 'United States'}),
+                data: JSON.stringify({zip_code: '01279', country: 'Germany'}),
                 success: showData(),
                 dataType: "application/json",
                 processData:  false,
@@ -38,10 +44,10 @@
     <form method="POST" action="#" onsubmit="getCity()">
         {% csrf_token %}
         <label for="country">country  </label>
-        <input type="text" id="country">
+        <input type="text" id="country" value="">
         <br> <br>
         <label for="zip">zip code  </label>
-        <input type="text" id="zip">
+        <input type="text" id="zip" value="">
         <br> <br>
         <input type="submit" value="go">
     </form>

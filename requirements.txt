@@ -31,6 +31,20 @@ make
 sudo make install
 cd ..
 
+#		if you using django 1.8 may emerged exception 'module' object has no attribute 'commit_on_success'.
+#		to fix this need to run:
+#		pip install -e git+https://github.com/django-tastypie/django-tastypie#egg=TastyPie
+
+
+
+#		if tests throw 'Got an error creating the test database: permission denied to copy database "template_postgis"'
+#		run:
+#			sudo su - postgres
+#			psql
+#			update pg_database set datistemplate=true where datname='template_postgis';
+
+
+
 #		sudo su - postgres
 #		cdeatedb yourdatabase
 #		psql -d yourdatabase -c "CREATE EXTENSION postgis;"

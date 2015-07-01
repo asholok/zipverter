@@ -1,0 +1,29 @@
+[
+{
+    "fields": {
+        "country": "United States",
+        "city": "Beverly Hills",
+        "zip_code": "90210"
+    },
+    "model": "handler.locationtable",
+    "pk": 15
+},
+{
+    "fields": {
+        "country": "Germany",
+        "city": "Berlin",
+        "zip_code": "10178"
+    },
+    "model": "handler.locationtable",
+    "pk": 16
+},
+{
+    "fields": {
+        "country": "Germany",
+        "city": "Dresden",
+        "zip_code": "01279"
+    },
+    "model": "handler.locationtable",
+    "pk": 17
+}
+]

@@ -1,0 +1,3 @@
+-   fields: {city: Beverly Hills, country: United States, zip_code: '90210'}
+    model: handler.locationtable
+    pk: 15

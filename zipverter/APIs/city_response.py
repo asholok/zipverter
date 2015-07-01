@@ -1,8 +1,8 @@
+import json
 from tastypie import resources
 from handler.models import LocationTable
 from handler.lazy_load import find_city
 from tastypie.authorization import Authorization
-import json
 from django.http import HttpResponse
 from tastypie.exceptions import ImmediateHttpResponse
 
@@ -23,13 +23,13 @@ class ZipTableResource(resources.ModelResource):
 
         try:
             location_obj = LocationTable.objects.get(country=country, zip_code=zip_code)
-            city = location_obj.city     
-            raise ImmediateHttpResponse(response=HttpResponse(content=json.dumps({'city': city}),status='200'))
+            city = location_obj.city
+            raise ImmediateHttpResponse(response=HttpResponse(content=json.dumps({'city': city}),status=200))
         except LocationTable.DoesNotExist:
             city = find_city(zip_code, country)
+            error = 'Country and zip code missmatch'
             if city:
                 bundle.data['city'] = city
                 return super(ZipTableResource, self).obj_create(bundle, request=request, **kwargs)
-            error = 'Country and zip code missmatch'
-            raise ImmediateHttpResponse(response=HttpResponse(content=json.dumps({'error': error}),status='200'))
+            raise ImmediateHttpResponse(response=HttpResponse(content=json.dumps({'error': error}),status=200))
 
