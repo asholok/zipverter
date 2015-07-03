@@ -96,7 +96,7 @@ CITIES_PLUGINS = [
     'cities.plugin.postal_code_ca.Plugin',  
 ]
 
-# Internationalization
+# Internationalization 172.30.0.235
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'

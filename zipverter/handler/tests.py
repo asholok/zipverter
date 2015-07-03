@@ -4,7 +4,7 @@ from django.test.client import Client
 from tastypie.test import ResourceTestCase
 import json
 
-URI = '/api/zip_table/'
+# URI = '/api/zip_table/'
 
 # class InternalTest(TestCase):
 #     fixtures = ['handler.json']
