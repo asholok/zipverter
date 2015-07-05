@@ -51,7 +51,7 @@ psql -d djgeo -c "CREATE EXTENSION fuzzystrmatch;"
 psql -d djgeo -c "CREATE EXTENSION postgis_tiger_geocoder;"
 psql
 CREATE USER asholok PASSWORD 'asholok';
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO asholok;
+GRANT ALL PRIVILEGES ON DATABASE djgeo TO asholok;
 \q
 
 #
