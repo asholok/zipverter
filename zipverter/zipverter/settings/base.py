@@ -13,8 +13,9 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PATH_TO_SETTINGS = os.path.dirname(os.path.abspath(__file__))
 
+BASE_DIR = '/'.join(PATH_TO_SETTINGS.split('/')[:-2])
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -55,8 +56,6 @@ MIDDLEWARE_CLASSES = (
 )
 
 ROOT_URLCONF = 'zipverter.urls'
-
-TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
 
 TEMPLATES = [
     {
