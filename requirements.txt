@@ -2,6 +2,7 @@ sudo pip install django
 sudo pip install django-tastypie
 sudo pip install django-cities
 sudo pip install psycopg2
+sudo pip install whitenoise
 sudo apt-get install binutils libproj-dev gdal-bin
 
 
