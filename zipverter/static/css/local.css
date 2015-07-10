@@ -1,0 +1,12 @@
+body {
+	padding: 24px;
+	background: #fefefe;
+}
+
+#error {
+	color: #cc5555;
+}
+
+#ok {
+	color: #00cc55;
+}

@@ -1,7 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+{% extends "base.html" %}
+
+{% block script %}
     <script type="text/javascript">
         function getCity() {
             var postal_code = $('#zip').val();
@@ -38,8 +37,8 @@
         }
         getData();
     </script>
-</head>
-<body>
+{% endblock %}
+{% block content %}
     <form method="POST" action="#" onsubmit="getCity()">
         {% csrf_token %}
         <label for="country">country  </label>
@@ -51,5 +50,4 @@
         <!-- <input type="submit" value="go"> -->
     </form>
     <button onclick="getCity()">Click me</button>
-</body>
-</html>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div>Logs</div>
+    {% for logg in logs_list %}
+        <div {% if 'error' in logg.response %} id="error" {% else %} id="ok"  {% endif %}>
+            User : {{logg.client_ip}}, et: {{logg.date}} <br>
+            ask : {{logg.request}} ---> get: {{logg.response}} 
+        </div>
+    {% endfor %}
+
+    {% if is_paginated %}
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+        <li><a href="/logs?page={{page_obj.previous_page_number}}">previous</a></li>
+        {% endif %}
+        <li class="active"> Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.</li>
+        {% if page_obj.has_next %}
+        <li><a href="/logs?page={{page_obj.next_page_number}}">next</a></li>
+        {% endif %}
+    </ul>
+    {% endif %} 
+{% endblock %}
