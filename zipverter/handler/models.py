@@ -11,3 +11,11 @@ class LocationTable(models.Model):
     def __unicode__(self):
         return self.city
 
+class LoggForLocationTable(models.Model):
+    request = models.CharField(max_length=200)
+    response = models.CharField(max_length=200)
+    client_ip = models.CharField(max_length=200)
+    date = models.DateField(auto_now_add=True)
+
+    def __unicode__(self):
+        return '{}___{}'.format(self.client_ip, self.date)

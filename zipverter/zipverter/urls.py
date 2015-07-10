@@ -18,11 +18,13 @@ from django.contrib import admin
 from APIs.city_response import ZipTableResource
 from django.views.generic import TemplateView
 from tastypie.api import Api
+# import debug_toolbar
 
 zip_convertor_resource = ZipTableResource()
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/', include(zip_convertor_resource.urls)),
+    # url(r'^logs/', include(debug_toolbar.urls)),
     url(r'^$', TemplateView.as_view(template_name='index.html')),
 ]
