@@ -10,6 +10,6 @@ class LoggView(generic.ListView):
     paginate_by = 50
 
     def get_queryset(self):
-        return LoggForLocationTable.objects.order_by('-date')
+        return LoggForLocationTable.objects.order_by('-id')
 
 # Create your views here.

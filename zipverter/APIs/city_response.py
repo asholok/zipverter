@@ -19,6 +19,8 @@ class ZipTableResource(resources.ModelResource):
     
     def __create_logg(self, request, response, meta):
         client_ip = meta.get('HTTP_X_FORWARDED_FOR')
+        if not client_ip:
+            client_ip = '127.0.0.1'
         logg = LoggForLocationTable(
             request=request,
             response=response,
@@ -30,11 +32,6 @@ class ZipTableResource(resources.ModelResource):
     def obj_create(self, bundle, request=None, **kwargs):
         country = bundle.data['country']
         zip_code = bundle.data['zip_code']
-
-        print "-------------------------------------------------------------"
-        print bundle.data
-        print bundle.request.META
-        print "-------------------------------------------------------------"
 
         try:
             location_obj = LocationTable.objects.get(country=country, zip_code=zip_code)
