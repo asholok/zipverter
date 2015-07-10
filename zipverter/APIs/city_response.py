@@ -18,7 +18,7 @@ class ZipTableResource(resources.ModelResource):
         authorization = Authorization()
     
     def __create_logg(self, request, response, meta):
-        client_ip = meta.get('REMOTE_ADDR')
+        client_ip = meta.get('HTTP_X_FORWARDED_FOR')
         logg = LoggForLocationTable(
             request=request,
             response=response,
