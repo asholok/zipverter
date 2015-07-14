@@ -27,37 +27,43 @@ class ZipTableResource(resources.ModelResource):
             response=response,
             client_ip=client_ip
         )
-
+        print '__create_logg'
         logg.save()
 
     def __create_response(self, zip_code, country):
-        print '__create_response'
         location_obj = LocationTable.objects.get(country=country, zip_code=zip_code)
 
         if country == 'United States':
             return {'city': location_obj.city, 'state': location_obj.state}
         return {'city': location_obj.city}
 
+    def __prepare_special_zip(self, data):
+        country = data['country']
+        zip_code = data['zip_code']
+
+        if country == 'United Kingdom':
+            zip_code = zip_code.split(' ')[0]
+
+        return (country, zip_code)
+
 
     def obj_create(self, bundle, request=None, **kwargs):
-        country = bundle.data['country']
-        zip_code = bundle.data['zip_code']
+        country, zip_code = self.__prepare_special_zip(bundle.data)
 
         try:
             response = self.__create_response(zip_code, country)
-            print 'response'
             self.__create_logg(bundle.data, response, bundle.request.META)
             raise ImmediateHttpResponse(response=HttpResponse(
                                             content=json.dumps(response),
                                             status=200
                                         ))
         except LocationTable.DoesNotExist:
-            print 'LocationTable.DoesNotExist'
             city = find_city(zip_code, country)
             error_response = {'error':'Country and zip code missmatch'}
             
             if city:
                 bundle.data['city'] = city
+                bundle.data['zip_code'] = zip_code
                 bundle.data['state'] = find_state(zip_code, country)           
                 return super(ZipTableResource, self).obj_create(bundle, request=request, **kwargs)
             self.__create_logg(bundle.data, error_response, bundle.request.META)
