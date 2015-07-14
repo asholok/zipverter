@@ -11,8 +11,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterUniqueTogether(
-            name='locationtable',
-            unique_together=set([('country', 'zip_code')]),
+        migrations.AddField(
+            model_name='locationtable',
+            name='state',
+            field=models.CharField(max_length=100, blank=True),
         ),
     ]

@@ -7,6 +7,7 @@ class LocationTable(models.Model):
     country = models.CharField(max_length=100)
     zip_code = models.CharField(max_length=10)
     city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100, blank=True)
 
     def __unicode__(self):
         return self.city

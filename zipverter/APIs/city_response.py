@@ -1,7 +1,7 @@
 import json
 from tastypie import resources
 from handler.models import LocationTable, LoggForLocationTable
-from handler.lazy_load import find_city
+from handler.lazy_load import find_city, find_state
 from tastypie.authorization import Authorization
 from django.http import HttpResponse
 from tastypie.exceptions import ImmediateHttpResponse
@@ -11,7 +11,7 @@ class ZipTableResource(resources.ModelResource):
     class Meta:
         queryset = LocationTable.objects.all()
         resource_name = 'zip_table'
-        fields = ['city', 'zip_code', 'country']
+        fields = ['city', 'zip_code', 'country', 'state']
         allowed_methods = ['get', 'post']
         list_allowed_methods = ['get', 'post']
         always_return_data = True
@@ -19,6 +19,7 @@ class ZipTableResource(resources.ModelResource):
     
     def __create_logg(self, request, response, meta):
         client_ip = meta.get('HTTP_X_FORWARDED_FOR')
+        """ For use on localhost """
         if not client_ip:
             client_ip = '127.0.0.1'
         logg = LoggForLocationTable(
@@ -29,25 +30,35 @@ class ZipTableResource(resources.ModelResource):
 
         logg.save()
 
+    def __create_response(self, zip_code, country):
+        print '__create_response'
+        location_obj = LocationTable.objects.get(country=country, zip_code=zip_code)
+
+        if country == 'United States':
+            return {'city': location_obj.city, 'state': location_obj.state}
+        return {'city': location_obj.city}
+
+
     def obj_create(self, bundle, request=None, **kwargs):
         country = bundle.data['country']
         zip_code = bundle.data['zip_code']
 
         try:
-            location_obj = LocationTable.objects.get(country=country, zip_code=zip_code)
-            response = {'city': location_obj.city}
-            
+            response = self.__create_response(zip_code, country)
+            print 'response'
             self.__create_logg(bundle.data, response, bundle.request.META)
             raise ImmediateHttpResponse(response=HttpResponse(
                                             content=json.dumps(response),
                                             status=200
                                         ))
         except LocationTable.DoesNotExist:
+            print 'LocationTable.DoesNotExist'
             city = find_city(zip_code, country)
             error_response = {'error':'Country and zip code missmatch'}
             
             if city:
                 bundle.data['city'] = city
+                bundle.data['state'] = find_state(zip_code, country)           
                 return super(ZipTableResource, self).obj_create(bundle, request=request, **kwargs)
             self.__create_logg(bundle.data, error_response, bundle.request.META)
             raise ImmediateHttpResponse(response=HttpResponse(
