@@ -23,19 +23,6 @@
         function showData(data){ 
             console.log(data);
         }
-
-        function getData() {
-            $.ajax({
-                type: 'POST',
-                url: '/api/zip_table/',
-                data: JSON.stringify({zip_code: '01279', country: 'Germany'}),
-                success: showData(),
-                dataType: "application/json",
-                processData:  false,
-                contentType: "application/json"
-            });
-        }
-        getData();
     </script>
 {% endblock %}
 {% block content %}

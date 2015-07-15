@@ -1,3 +1,5 @@
+
+
 sudo pip install django
 sudo pip install django-tastypie
 sudo pip install django-cities

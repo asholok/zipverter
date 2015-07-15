@@ -13,9 +13,9 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
-PATH_TO_SETTINGS = os.path.dirname(os.path.abspath(__file__))
-
-BASE_DIR = '/'.join(PATH_TO_SETTINGS.split('/')[:-2])
+PATH_TO_SETTINGS = os.path.dirname(os.path.abspath(__file__)).split('/')
+VAR_ROOT = '/'.join(PATH_TO_SETTINGS[:-4])
+BASE_DIR = '/'.join(PATH_TO_SETTINGS[:-2])
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -132,6 +132,14 @@ STATICFILES_FINDERS = (
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
     'filters': {
         'require_debug_false': {
             '()': 'django.utils.log.RequireDebugFalse'
@@ -141,11 +149,19 @@ LOGGING = {
         'mail_admins': {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
+            'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': True,
         },
         'console':{
             'level': 'DEBUG',
             'class': 'logging.StreamHandler'
+        },
+        'log_file':{
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(VAR_ROOT, 'zip_logs/django.log'),
+            'maxBytes': '16777216',
+            'formatter': 'verbose'
         },
     },
     'loggers': {
@@ -155,8 +171,14 @@ LOGGING = {
             'propagate': True,
             },
         'cities': {
-            'handlers': ['console'],
-            'level': 'INFO'
+            'handlers': ['console', 'log_file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'handler': {
+            'handlers': ['console', 'log_file'],
+            'level': 'INFO',
+            'propagate': True,
         },
 
         }
