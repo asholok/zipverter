@@ -171,12 +171,12 @@ LOGGING = {
             'propagate': True,
             },
         'cities': {
-            'handlers': ['console', 'log_file'],
+            'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,
         },
         'handler': {
-            'handlers': ['console', 'log_file'],
+            'handlers': ['log_file'],
             'level': 'INFO',
             'propagate': True,
         },

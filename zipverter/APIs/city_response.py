@@ -27,7 +27,6 @@ class ZipTableResource(resources.ModelResource):
             response=response,
             client_ip=client_ip
         )
-        print '__create_logg'
         logg.save()
 
     def __create_response(self, zip_code, country):
@@ -61,8 +60,10 @@ class ZipTableResource(resources.ModelResource):
             if city:
                 bundle.data['city'] = city
                 bundle.data['zip_code'] = zip_code
-                bundle.data['state'] = find_state(zip_code, country)           
-                return super(ZipTableResource, self).obj_create(bundle, request=request, **kwargs)
+                bundle.data['state'] = find_state(zip_code, country)
+                super(ZipTableResource, self).obj_create(bundle, request=request, **kwargs)
+                return self.obj_create(bundle, request=request, **kwargs)
+            
             self.__create_logg(bundle.data, error_response, bundle.request.META)
             raise ImmediateHttpResponse(response=HttpResponse(
                                             content=json.dumps(error_response),
