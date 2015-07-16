@@ -47,7 +47,7 @@ apt-get install postgis*
 
 
 sudo su - postgres
-cdeatedb djgeo
+createdb djgeo
 psql -d djgeo -c "CREATE EXTENSION postgis;"
 psql -d djgeo -c "CREATE EXTENSION postgis_topology;"
 psql -d djgeo -c "CREATE EXTENSION fuzzystrmatch;"

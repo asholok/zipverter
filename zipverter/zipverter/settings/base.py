@@ -12,10 +12,15 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import logging    
+import logging.handlers    
+from django.conf import settings    
 
 PATH_TO_SETTINGS = os.path.dirname(os.path.abspath(__file__)).split('/')
-VAR_ROOT = '/'.join(PATH_TO_SETTINGS[:-4])
+# VAR_ROOT = '/'.join(PATH_TO_SETTINGS[:-4])
 BASE_DIR = '/'.join(PATH_TO_SETTINGS[:-2])
+
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -159,7 +164,7 @@ LOGGING = {
         'log_file':{
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(VAR_ROOT, 'zip_logs/django.log'),
+            'filename': os.path.join(BASE_DIR, 'logs/django.log'),
             'maxBytes': '16777216',
             'formatter': 'verbose'
         },
@@ -177,11 +182,12 @@ LOGGING = {
         },
         'handler': {
             'handlers': ['log_file'],
-            'level': 'INFO',
+            'level': 'ERROR',
             'propagate': True,
         },
 
         }
 }
 
+logging.basicConfig()
 
