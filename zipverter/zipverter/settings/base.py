@@ -161,13 +161,13 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler'
         },
-        'log_file':{
-            'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(BASE_DIR, 'logs/django.log'),
-            'maxBytes': '16777216',
-            'formatter': 'verbose'
-        },
+        # 'log_file':{
+        #     'level': 'DEBUG',
+        #     'class': 'logging.handlers.RotatingFileHandler',
+        #     'filename': os.path.join(BASE_DIR, 'logs/django.log'),
+        #     'maxBytes': '16777216',
+        #     'formatter': 'verbose'
+        # },
     },
     'loggers': {
         'django.request': {
@@ -181,7 +181,7 @@ LOGGING = {
             'propagate': True,
         },
         'handler': {
-            'handlers': ['log_file'],
+            'handlers': ['console'],
             'level': 'ERROR',
             'propagate': True,
         },
