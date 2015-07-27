@@ -36,15 +36,17 @@ class ZipTableResource(resources.ModelResource):
             return {'city': location_obj.city, 'state': location_obj.state}
         return {'city': location_obj.city}
 
-    def __prepare_special_zip(self, zip_code):
+    def __prepare_special_zip(self, country, zip_code):
         zip_code = zip_code.split(' ')[0]
+        if country == 'Canada' and len(zip_code) > 3:
+            zip_code = zip_code[:3]
 
         return zip_code.upper()
 
 
     def obj_create(self, bundle, request=None, **kwargs):
         country = bundle.data['country']
-        zip_code = self.__prepare_special_zip(bundle.data['zip_code'])
+        zip_code = self.__prepare_special_zip(country, bundle.data['zip_code'])
 
         try:
             response = self.__create_response(zip_code, country)
