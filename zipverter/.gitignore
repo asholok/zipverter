@@ -1,0 +1,8 @@
+*.log
+*.pyc
+*.box
+*.db
+*.pid
+*.dump
+*.pot
+*.zip
