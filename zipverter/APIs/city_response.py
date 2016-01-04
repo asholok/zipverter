@@ -11,7 +11,7 @@ class ZipTableResource(resources.ModelResource):
     class Meta:
         queryset = LocationTable.objects.all()
         resource_name = 'zip_table'
-        fields = ['city', 'zip_code', 'country', 'state']
+        fields = ['city', 'zip_code', 'country', 'state', 'state_code']
         allowed_methods = ['get', 'post']
         list_allowed_methods = ['get', 'post']
         always_return_data = True
@@ -33,7 +33,10 @@ class ZipTableResource(resources.ModelResource):
         location_obj = LocationTable.objects.get(country=country, zip_code=zip_code)
 
         if country == 'United States':
-            return {'city': location_obj.city, 'state': location_obj.state}
+            if location_obj.state_code == '':
+                location_obj.state_code = find_state(zip_code, country).code
+                location_obj.save()
+            return {'city': location_obj.city, 'state': location_obj.state, 'state_code': location_obj.state_code}
         return {'city': location_obj.city}
 
     def __prepare_special_zip(self, country, zip_code):
@@ -47,7 +50,6 @@ class ZipTableResource(resources.ModelResource):
     def obj_create(self, bundle, request=None, **kwargs):
         country = bundle.data['country']
         zip_code = self.__prepare_special_zip(country, bundle.data['zip_code'])
-
         try:
             response = self.__create_response(zip_code, country)
             self.__create_logg(bundle.data, response, bundle.request.META)
@@ -60,9 +62,12 @@ class ZipTableResource(resources.ModelResource):
             error_response = {'error':'Country and zip code missmatch'}
             
             if city:
+                state = find_state(zip_code, country)
                 bundle.data['city'] = city
                 bundle.data['zip_code'] = zip_code
-                bundle.data['state'] = find_state(zip_code, country)
+                if state:
+                    bundle.data['state'] = state.name 
+                    bundle.data['state_code'] = state.code
                 super(ZipTableResource, self).obj_create(bundle, request=request, **kwargs)
                 return self.obj_create(bundle, request=request, **kwargs)
             

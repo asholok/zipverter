@@ -8,6 +8,7 @@ class LocationTable(models.Model):
     zip_code = models.CharField(max_length=10)
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100, blank=True)
+    state_code = models.CharField(max_length=7, blank=True)
 
     def __unicode__(self):
         return self.city
