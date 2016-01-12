@@ -1,17 +1,19 @@
 import json
 from tastypie import resources
 from handler.models import LocationTable, LoggForLocationTable
-from handler.lazy_load import find_city, find_state
+from handler.lazy_load import find_location_info
 from tastypie.authorization import Authorization
 from django.http import HttpResponse
 from tastypie.exceptions import ImmediateHttpResponse
+
+SUBINFOCOUNTRIES = ['United States', 'Brazil']
 
 class ZipTableResource(resources.ModelResource):
 
     class Meta:
         queryset = LocationTable.objects.all()
         resource_name = 'zip_table'
-        fields = ['city', 'zip_code', 'country', 'state', 'state_code']
+        fields = ['city', 'zip_code', 'country', 'state', 'state_code', 'district']
         allowed_methods = ['get', 'post']
         list_allowed_methods = ['get', 'post']
         always_return_data = True
@@ -32,11 +34,16 @@ class ZipTableResource(resources.ModelResource):
     def __create_response(self, zip_code, country):
         location_obj = LocationTable.objects.get(country=country, zip_code=zip_code)
 
-        if country == 'United States':
-            if location_obj.state_code == '':
-                location_obj.state_code = find_state(zip_code, country).code
+        if country in SUBINFOCOUNTRIES:
+            if location_obj.state_code == '': # Only for prod database to fullfill state_code for existing LocationTable
+                location_obj.state_code = find_location_info(zip_code, country)['state_code']
                 location_obj.save()
-            return {'city': location_obj.city, 'state': location_obj.state, 'state_code': location_obj.state_code}
+            return {
+                        'city': location_obj.city, 
+                        'state': location_obj.state, 
+                        'state_code': location_obj.state_code, 
+                        'district': location_obj.district
+                    }
         return {'city': location_obj.city}
 
     def __prepare_special_zip(self, country, zip_code):
@@ -58,16 +65,14 @@ class ZipTableResource(resources.ModelResource):
                                             status=200
                                         ))
         except LocationTable.DoesNotExist:
-            city = find_city(zip_code, country)
+            location_info = find_location_info(zip_code, country)
             error_response = {'error':'Country and zip code missmatch'}
-            
-            if city:
-                state = find_state(zip_code, country)
-                bundle.data['city'] = city
+            if location_info:
+                bundle.data['city'] = location_info['city']
                 bundle.data['zip_code'] = zip_code
-                if state:
-                    bundle.data['state'] = state.name 
-                    bundle.data['state_code'] = state.code
+                bundle.data['state'] = location_info['state'] 
+                bundle.data['state_code'] = location_info['state_code']
+                bundle.data['district'] = location_info.get('district', '')
                 super(ZipTableResource, self).obj_create(bundle, request=request, **kwargs)
                 return self.obj_create(bundle, request=request, **kwargs)
             
