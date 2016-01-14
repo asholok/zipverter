@@ -1,0 +1,8 @@
+
+*.idea
+Backup
+db.sqlide3
+*.pyc
+*.ini
+*.log
+*.pid

@@ -12,7 +12,7 @@ django:
 postgis:
   image: mdillon/postgis
   volumes:
-    - local_database:/var/lib/postgresql/data
+    - postgis:/var/lib/postgresql/data
   environment:
     POSTGRES_PASSWORD: "asholok"
     POSTGRES_USER: "asholok"
