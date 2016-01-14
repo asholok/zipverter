@@ -1,0 +1,18 @@
+django:
+  image: asholok/zip_project:latest
+  command: python manage.py runserver 0.0.0.0:8000
+  environment:
+    RUN_ENV: "$RUN_ENV"
+  ports:
+   - "8001:8000"
+  volumes:
+   - .:/project
+  links:
+   - postgis
+postgis:
+  image: mdillon/postgis
+  volumes:
+    - local_database:/var/lib/postgresql/data
+  environment:
+    POSTGRES_PASSWORD: "asholok"
+    POSTGRES_USER: "asholok"

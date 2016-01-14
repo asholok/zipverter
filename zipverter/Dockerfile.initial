@@ -1,0 +1,30 @@
+FROM ubuntu:14.04
+MAINTAINER Kolosha Igor
+
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
+RUN apt-get update
+RUN apt-get install -y python-pip python-dev python-lxml libxml2-dev libxslt1-dev libxslt-dev libpq-dev zlib1g-dev  \
+	binutils libproj-dev gdal-bin postgresql-9.3 postgresql-contrib-9.3 postgis* python-psycopg2  git && apt-get clean
+
+RUN mkdir -p /tmp/geo/geos-3.4.2
+ADD /geos-3.4.2/ /tmp/geo/geos-3.4.2
+RUN cd /tmp/geo/geos-3.4.2 \
+	&& ./configure \
+	&& make \
+	&& make install
+
+
+RUN mkdir -p /tmp/geo/proj-4.9.1
+ADD /proj-4.9.1/ /tmp/geo/proj-4.9.1
+RUN cd /tmp/geo/proj-4.9.1 \
+	&& ./configure \
+	&& make \
+	&& make install
+
+
+ADD requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
+WORKDIR /project
+
+EXPOSE 80
