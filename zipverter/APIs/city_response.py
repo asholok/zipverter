@@ -49,7 +49,8 @@ class ZipTableResource(resources.ModelResource):
             if state not in city_name:
                 city_name += ', ' + state_code
             return {
-                        'city': city_name, 
+                        'city': location_obj.city, 
+                        'city_name': city_name, 
                         'city_alias': city_alias, 
                         'state': state, 
                         'state_code': state_code, 
