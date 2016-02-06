@@ -1,4 +1,5 @@
 import json
+import re
 from tastypie import resources
 from handler.models import LocationTable, LoggForLocationTable
 from handler.lazy_load import find_location_info
@@ -33,18 +34,28 @@ class ZipTableResource(resources.ModelResource):
 
     def __create_response(self, zip_code, country):
         location_obj = LocationTable.objects.get(country=country, zip_code=zip_code)
-
+        city_name = city_alias = location_obj.city
+        city_alias = re.sub(r'[().,*\'"]', '', city_alias)
+        city_alias = city_alias.replace(" ", "-")
+        
         if country in SUBINFOCOUNTRIES:
             if location_obj.state_code == '': # Only for prod database to fullfill state_code for existing LocationTable
                 location_obj.state_code = find_location_info(zip_code, country)['state_code']
                 location_obj.save()
+            state_code = location_obj.state_code
+            state = location_obj.state
+            if state_code not in city_alias:
+                city_alias += "-" + state_code
+            if state not in city_name:
+                city_name += ', ' + state_code
             return {
-                        'city': location_obj.city, 
-                        'state': location_obj.state, 
-                        'state_code': location_obj.state_code, 
+                        'city': city_name, 
+                        'city_alias': city_alias, 
+                        'state': state, 
+                        'state_code': state_code, 
                         'district': location_obj.district
                     }
-        return {'city': location_obj.city}
+        return {'city': city_name, 'city_alias': city_alias}
 
     def __prepare_special_zip(self, country, zip_code):
         zip_code = zip_code.split(' ')[0]
