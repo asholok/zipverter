@@ -56,7 +56,7 @@ class ZipTableResource(resources.ModelResource):
                         'state_code': state_code, 
                         'district': location_obj.district
                     }
-        return {'city': city_name, 'city_alias': city_alias}
+        return {'city': location_obj.city, 'city_name': city_name, 'city_alias': city_alias}
 
     def __prepare_special_zip(self, country, zip_code):
         zip_code = zip_code.split(' ')[0]
