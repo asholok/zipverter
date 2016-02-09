@@ -23,6 +23,7 @@ class ZipTableResource(resources.ModelResource):
     def __create_logg(self, request, response, meta):
         client_ip = meta.get('HTTP_X_FORWARDED_FOR')
         """ For use on localhost """
+        
         if not client_ip:
             client_ip = '127.0.0.1'
         logg = LoggForLocationTable(
@@ -49,14 +50,14 @@ class ZipTableResource(resources.ModelResource):
             if state not in city_name:
                 city_name += ', ' + state_code
             return {
-                        'city': location_obj.city, 
+                        # 'city': location_obj.city, 
                         'city_name': city_name, 
                         'city_alias': city_alias, 
-                        'state': state, 
-                        'state_code': state_code, 
+                        # 'state': state, 
+                        # 'state_code': state_code, 
                         'district': location_obj.district
                     }
-        return {'city': location_obj.city, 'city_name': city_name, 'city_alias': city_alias}
+        return {'city_name': city_name, 'city_alias': city_alias}
 
     def __prepare_special_zip(self, country, zip_code):
         zip_code = zip_code.split(' ')[0]
