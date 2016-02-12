@@ -14,7 +14,15 @@ class ZipTableResource(resources.ModelResource):
     class Meta:
         queryset = LocationTable.objects.all()
         resource_name = 'zip_table'
-        fields = ['city', 'zip_code', 'country', 'state', 'state_code', 'district']
+        fields = [
+            'city', 
+            'zip_code', 
+            'country', 
+            'state', 
+            'state_code', 
+            'district',
+            'timezone'
+        ]
         allowed_methods = ['get', 'post']
         list_allowed_methods = ['get', 'post']
         always_return_data = True
@@ -55,9 +63,10 @@ class ZipTableResource(resources.ModelResource):
                         'city_alias': city_alias, 
                         # 'state': state, 
                         # 'state_code': state_code, 
-                        'district': location_obj.district
+                        'district': location_obj.district,
+                        'timezone': location_obj.timezone
                     }
-        return {'city_name': city_name, 'city_alias': city_alias}
+        return {'city_name': city_name, 'city_alias': city_alias, 'timezone': location_obj.timezone }
 
     def __prepare_special_zip(self, country, zip_code):
         zip_code = zip_code.split(' ')[0]
@@ -85,6 +94,7 @@ class ZipTableResource(resources.ModelResource):
                 bundle.data['zip_code'] = zip_code
                 bundle.data['state'] = location_info['state'] 
                 bundle.data['state_code'] = location_info['state_code']
+                bundle.data['timezone'] = location_info.get('timezone', '')
                 bundle.data['district'] = location_info.get('district', '')
                 super(ZipTableResource, self).obj_create(bundle, request=request, **kwargs)
                 return self.obj_create(bundle, request=request, **kwargs)
