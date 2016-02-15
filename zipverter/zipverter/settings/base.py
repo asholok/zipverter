@@ -90,7 +90,7 @@ DATABASES = {
         'NAME': 'djgeo',
         'USER': 'asholok',
         'PASSWORD': 'asholok',
-        'HOST': 'localhost',
+        'HOST': 'igorzipverter.cge9boeglav9.eu-west-1.rds.amazonaws.com',
         'PORT': '5432',
     }
 }
