@@ -7,12 +7,3 @@ django:
    - "8001:8000"
   volumes:
    - .:/project
-  links:
-   - postgis
-postgis:
-  image: mdillon/postgis
-  volumes:
-    - local_database:/var/lib/postgresql/data
-  environment:
-    POSTGRES_PASSWORD: "asholok"
-    POSTGRES_USER: "asholok"

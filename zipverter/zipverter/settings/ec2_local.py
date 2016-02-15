@@ -4,7 +4,7 @@ DATABASES = {
         'NAME': 'djgeo',
         'USER': 'asholok',
         'PASSWORD': 'asholok',
-        'HOST': 'localhost',
+        'HOST': os.getenv('ZIPVERTER_RDS', ''),
         'PORT': '5432',
     }
 }
