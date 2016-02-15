@@ -1,22 +1,55 @@
-from cities.models import City, PostalCode
+# coding=utf-8
+from cities.models import City, PostalCode, Country, District
+import requests
+import json
 
-def find_city(zip_code, country_name):
-    zip_objs = PostalCode.objects.filter(code=zip_code, country__name=country_name)
-    if zip_objs:
-        return City.objects.distance(zip_objs[0].location).order_by('distance')[0].name
-    return False
-    
-def find_state(zip_code, country_name):
-    zip_objs = PostalCode.objects.filter(code=zip_code, country__name=country_name)
-    if zip_objs and country_name == 'United States':
-        region = City.objects.distance(zip_objs[0].location).order_by('distance')[0].region
-        return region.name
+
+def formatize_results(obj):
+    return {
+                'state': obj.region.name, 
+                'state_code': obj.region.code, 
+                'city': obj.name, 
+                'timezone': obj.timezone
+            }
+
+def get_postmon_results(zip_code):
+    try:
+        response = requests.get('http://api.postmon.com.br/v1/cep/' + zip_code)
+        result = json.loads(response.text)
+        city_obj = City.objects.get(name=result['cidade'], country__name='Brazil')
+        return {
+                    'state': result['estado_info']['nome'], 
+                    'state_code': result['estado'], 
+                    'city': result['cidade'],
+                    'district': result['bairro'],
+                    'timezone': city_obj.timezone
+                }
+    except:
+        pass
     return None
 
-    # try:
-    #     zip_objs = PostalCode.objects.get(code=zip_code, country__name=country_name)
-        
-    #     return City.objects.distance(zip_obj.location).order_by('distance')[0].name
-    # except PostalCode.DoesNotExist:
-    #     return False
+def find_location_info(zip_code, country_name):
+    if country_name == 'Brazil':
+        return get_postmon_results(zip_code)
+    zip_objs = PostalCode.objects.filter(code=zip_code, country__name=country_name)
 
+    if zip_objs:
+        if country_name == 'Mexico':
+            try:
+                zip_obj = zip_objs[0]
+                district_name = zip_obj.district_name
+                city_name = district_name if district_name else zip_obj.subregion_name
+                city_obj = City.objects.distance(zip_obj.location).order_by('distance')[0]
+                
+                return {
+                            'state': zip_obj.region_name, 
+                            'state_code': '', 
+                            'city': city_name, 
+                            'timezone': city_obj.timezone
+                        }
+            except Exception, e:
+                print e
+                return None
+        return formatize_results(City.objects.distance(zip_objs[0].location).order_by('distance')[0])
+    return None
+    

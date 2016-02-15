@@ -90,7 +90,7 @@ DATABASES = {
         'NAME': 'djgeo',
         'USER': 'asholok',
         'PASSWORD': 'asholok',
-        'HOST': 'postgis',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
