@@ -6,3 +6,5 @@
 *.dump
 *.pot
 *.zip
+geos-3.4.2/
+proj-4.9.1/
