@@ -3,6 +3,8 @@ django:
   command: python manage.py runserver 0.0.0.0:8000
   environment:
     RUN_ENV: "$RUN_ENV"
+    DATABASE_HOST: "$DATABASE_HOST"
+    DJANGO_ENV: "$DJANGO_ENV"
   ports:
    - "8001:8000"
   volumes:

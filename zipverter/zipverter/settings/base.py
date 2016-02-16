@@ -90,7 +90,7 @@ DATABASES = {
         'NAME': 'djgeo',
         'USER': 'asholok',
         'PASSWORD': 'asholok',
-        'HOST': 'igorzipverter.cge9boeglav9.eu-west-1.rds.amazonaws.com',
+        'HOST': os.getenv('DATABASE_HOST', ''),
         'PORT': '5432',
     }
 }
