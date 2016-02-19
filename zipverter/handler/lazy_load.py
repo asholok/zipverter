@@ -16,13 +16,16 @@ def get_postmon_results(zip_code):
     try:
         response = requests.get('http://api.postmon.com.br/v1/cep/' + zip_code)
         result = json.loads(response.text)
-        city_obj = City.objects.get(name=result['cidade'], country__name='Brazil')
+        try:
+            timezone = City.objects.get(name=unicode(result['cidade']), country__name='Brazil').timezone
+        except:
+            timezone = ''
         return {
                     'state': result['estado_info']['nome'], 
                     'state_code': result['estado'], 
                     'city': result['cidade'],
-                    'district': result['bairro'],
-                    'timezone': city_obj.timezone
+                    'district': result.get('bairro', ''),
+                    'timezone': timezone
                 }
     except:
         pass
