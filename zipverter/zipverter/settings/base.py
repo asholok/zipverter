@@ -88,8 +88,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': 'djgeo',
-        'USER': 'asholok',
-        'PASSWORD': 'asholok',
+        'USER': os.getenv('DATABASE_USER', ''),
+        'PASSWORD': os.getenv('DATABASE_PASS', ''),
         'HOST': os.getenv('DATABASE_HOST', ''),
         'PORT': '5432',
     }

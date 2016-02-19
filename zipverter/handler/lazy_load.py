@@ -24,7 +24,7 @@ def get_postmon_results(zip_code):
                     'state': result['estado_info']['nome'], 
                     'state_code': result['estado'], 
                     'city': result['cidade'],
-                    'district': result.get('bairro', ''),
+                    'district': result['bairro'],
                     'timezone': timezone
                 }
     except:
