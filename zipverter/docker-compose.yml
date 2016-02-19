@@ -8,6 +8,6 @@ django:
     DATABASE_PASS: "$DATABASE_PASS"
     DJANGO_ENV: "$DJANGO_ENV"
   ports:
-   - "8001:8000"
+   - "80:8000"
   volumes:
    - .:/project
