@@ -6,7 +6,6 @@ django:
     DATABASE_HOST: "$DATABASE_HOST"
     DATABASE_USER: "$DATABASE_USER"
     DATABASE_PASS: "$DATABASE_PASS"
-    DJANGO_ENV: "$DJANGO_ENV"
   ports:
    - "80:8000"
   volumes:

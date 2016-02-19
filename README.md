@@ -8,7 +8,6 @@ Need create next env variabels in os ::
 	export DATABASE_HOST=''
 	export DATABASE_USER=''
 	export DATABASE_PASS=''
-	export DJANGO_ENV=''
 
 Run ::
 
