@@ -72,7 +72,8 @@ class ZipTableResource(resources.ModelResource):
         zip_code = zip_code.split(' ')[0]
         if country == 'Canada' and len(zip_code) > 3:
             zip_code = zip_code[:3]
-
+        if country == 'Brazil':
+            zip_code = re.sub(r'[-]', '', zip_code)
         return zip_code.upper()
 
 
