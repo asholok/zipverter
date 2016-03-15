@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from tastypie.exceptions import ImmediateHttpResponse
 
 SUBINFOCOUNTRIES = ['United States', 'Brazil']
-WHITE_LIST = ['United Kingdom', 'Canada', 'New Zealand', 'Australia']
+WHITE_LIST = ['United Kingdom', 'Canada', 'New Zealand', 'Australia', 'South Africa']
 
 
 def shortfy_country_name(country):
