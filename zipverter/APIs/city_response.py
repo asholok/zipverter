@@ -8,12 +8,18 @@ from django.http import HttpResponse
 from tastypie.exceptions import ImmediateHttpResponse
 
 SUBINFOCOUNTRIES = ['United States', 'Brazil']
+WHITE_LIST = ['United Kingdom', 'Canada', 'New Zealand', 'Australia']
+
 
 def shortfy_country_name(country):
-    words = country.split(' ')
-    if len(words) > 1:
-       return ''.join([word[0] for word in words])
-    return country
+    if country in WHITE_LIST:
+        if country == 'South Africa':
+            return "-South-Africa"
+        words = country.split(' ')
+        if len(words) > 1:
+           return "-" + ''.join([word[0] for word in words])
+        return "-" + country
+    return ''
 
 class ZipTableResource(resources.ModelResource):
 
@@ -66,7 +72,7 @@ class ZipTableResource(resources.ModelResource):
             return {
                         # 'city': location_obj.city, 
                         'city_name': city_name, 
-                        'city_alias': city_alias + "-" + shortfy_country_name(country), 
+                        'city_alias': city_alias + shortfy_country_name(country), 
                         # 'state': state, 
                         # 'state_code': state_code, 
                         'district': location_obj.district,
@@ -74,7 +80,7 @@ class ZipTableResource(resources.ModelResource):
                     }
         return {
                     'city_name': city_name, 
-                    'city_alias': city_alias  + "-" + shortfy_country_name(country), 
+                    'city_alias': city_alias + shortfy_country_name(country), 
                     'timezone': location_obj.timezone 
                 }
 
