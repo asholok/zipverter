@@ -20,8 +20,9 @@ def get_postmon_results(zip_code):
             timezone = City.objects.get(name=unicode(result['cidade']), country__name='Brazil').timezone
         except:
             timezone = ''
+        state = result['estado_info']['nome'] if result.get('estado_info', False) else ''
         return {
-                    'state': result['estado_info']['nome'], 
+                    'state': state, 
                     'state_code': result['estado'], 
                     'city': result['cidade'],
                     'district': result['bairro'],
