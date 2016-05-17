@@ -1,0 +1,12 @@
+django:
+  image: asholok/zip_project:latest
+  command: python manage.py runserver 0.0.0.0:8000
+  environment:
+    RUN_ENV: "$RUN_ENV"
+    DATABASE_HOST: "$DATABASE_HOST"
+    DATABASE_USER: "$DATABASE_USER"
+    DATABASE_PASS: "$DATABASE_PASS"
+  ports:
+   - "80:8000"
+  volumes:
+   - .:/project

@@ -49,7 +49,6 @@ INSTALLED_APPS = (
     'cities',
     # 'debug_toolbar',
 )
-
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -89,9 +88,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': 'djgeo',
-        'USER': 'asholok',
-        'PASSWORD': 'asholok',
-        'HOST': 'localhost', #'igorzipverter.cge9boeglav9.eu-west-1.rds.amazonaws.com',
+        'USER': os.getenv('DATABASE_USER', ''),
+        'PASSWORD': os.getenv('DATABASE_PASS', ''),
+        'HOST': os.getenv('DATABASE_HOST', ''),
         'PORT': '5432',
     }
 }
@@ -122,10 +121,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
-)
+# STATICFILES_DIRS = (
+#     os.path.join(BASE_DIR, "static"),
+# )
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -188,6 +188,7 @@ LOGGING = {
 
         }
 }
+# INSTALLED_APPS += ("djsupervisor",)
 
 logging.basicConfig()
 

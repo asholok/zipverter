@@ -1,8 +1,9 @@
 import json
 import re
-from tastypie import resources
+from tastypie import resources, fields
 from handler.models import LocationTable, LoggForLocationTable
 from handler.lazy_load import find_location_info
+from handler.helper import get_cities_neighbor
 from tastypie.authorization import Authorization
 from django.http import HttpResponse
 from tastypie.exceptions import ImmediateHttpResponse
@@ -88,7 +89,8 @@ class ZipTableResource(resources.ModelResource):
         zip_code = zip_code.split(' ')[0]
         if country == 'Canada' and len(zip_code) > 3:
             zip_code = zip_code[:3]
-
+        if country == 'Brazil':
+            zip_code = re.sub(r'[-]', '', zip_code)
         return zip_code.upper()
 
 
@@ -121,3 +123,41 @@ class ZipTableResource(resources.ModelResource):
                                             status=200
                                         ))
 
+
+class CitysNeighborhoodResource(resources.ModelResource):
+
+    class Meta:
+        object_class = LocationTable
+        resource_name = 'neighborhood'
+        fields = ['city_name', 'country_name', 'measurement', 'radius']
+        allowed_methods = ['post']
+        authorization = Authorization()
+
+    def obj_create(self, bundle, request=None, **kwargs):
+        city_name = bundle.data.get('city_name', False)
+        country_name = bundle.data.get('country_name', False)
+        measurement = bundle.data.get('measurement', False)
+        radius = bundle.data.get('radius', False)
+
+        if not city_name or not country_name or not measurement or not radius:
+            error = u'Uncompleted data: city_name = {}, country_name = {} measurement = {} radius = {}'.format(
+                                                                                                        city_name, 
+                                                                                                        country_name, 
+                                                                                                        measurement, 
+                                                                                                        radius)
+            raise ImmediateHttpResponse(response=HttpResponse(
+                                            content=json.dumps({'error': error}),
+                                            status=406
+                                        ))
+        neighbor_cities = get_cities_neighbor(city_name, country_name, measurement, radius)
+        if isinstance(neighbor_cities, list):
+            data = neighbor_cities if neighbor_cities else 'No city neighbor found'
+            raise ImmediateHttpResponse(response=HttpResponse(
+                                            content=json.dumps({'data': data}),
+                                            status=200
+                                        ))
+        error = 'No such city found' if neighbor_cities == 0 else 'Wrong radius format'
+        raise ImmediateHttpResponse(response=HttpResponse(
+                                            content=json.dumps({'error': error}),
+                                            status=400
+                                        ))
