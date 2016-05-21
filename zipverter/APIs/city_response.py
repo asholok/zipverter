@@ -156,7 +156,7 @@ class CitysNeighborhoodResource(resources.ModelResource):
                                             content=json.dumps({'data': data}),
                                             status=200
                                         ))
-        error = 'No such city found' if neighbor_cities == 0 else 'Wrong radius format'
+        error = 'No such city as {} found'.format(city_name) if neighbor_cities == 0 else 'Wrong radius format'
         raise ImmediateHttpResponse(response=HttpResponse(
                                             content=json.dumps({'error': error}),
                                             status=400
