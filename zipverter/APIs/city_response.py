@@ -152,9 +152,8 @@ class CitysNeighborhoodResource(resources.ModelResource):
                                         ))
         neighbor_cities = get_cities_neighbor(city_name, country_name, measurement, radius, region_code)
         if isinstance(neighbor_cities, list):
-            data = neighbor_cities if neighbor_cities else 'No city neighbor found'
             raise ImmediateHttpResponse(response=HttpResponse(
-                                            content=json.dumps({'data': data}),
+                                            content=json.dumps({'data': neighbor_cities}),
                                             status=200
                                         ))
         error = 'No such city as {} found'.format(city_name) if neighbor_cities == 0 else 'Wrong radius format'
