@@ -138,6 +138,7 @@ class CitysNeighborhoodResource(resources.ModelResource):
         country_name = bundle.data.get('country_name', False)
         measurement = bundle.data.get('measurement', False)
         radius = bundle.data.get('radius', False)
+        region_code = bundle.data.get('region_code', False)
 
         if not city_name or not country_name or not measurement or not radius:
             error = u'Uncompleted data: city_name = {}, country_name = {} measurement = {} radius = {}'.format(
@@ -149,7 +150,7 @@ class CitysNeighborhoodResource(resources.ModelResource):
                                             content=json.dumps({'error': error}),
                                             status=406
                                         ))
-        neighbor_cities = get_cities_neighbor(city_name, country_name, measurement, radius)
+        neighbor_cities = get_cities_neighbor(city_name, country_name, measurement, radius, region_code)
         if isinstance(neighbor_cities, list):
             data = neighbor_cities if neighbor_cities else 'No city neighbor found'
             raise ImmediateHttpResponse(response=HttpResponse(
