@@ -5,15 +5,15 @@ from django.db.models import Q
 from handler.models import LocationTable
 from handler.constants import BRAZILIAN_STATE_CODES_REAL, BRAZILIAN_STATE_CODES_REVERCE
 
-def get_region_filter(country_name, region_code):
+def _get_region_filter(country_name, region_code):
     if region_code:
         if country_name == 'Brazil':
             region_code = BRAZILIAN_STATE_CODES_REAL[region_code]
         return Q(region__code=region_code)
     return Q()
 
-def get_city(city_name, country_name, region_code):
-    region_filter = get_region_filter(country_name, region_code)
+def _get_city(city_name, country_name, region_code):
+    region_filter = _get_region_filter(country_name, region_code)
     try:
         city_filter = Q(name=city_name, country__name=country_name)
         return City.objects.get(city_filter, region_filter)
@@ -26,7 +26,7 @@ def get_city(city_name, country_name, region_code):
         pass
     return False
 
-def create_response_list(neighborhood_list, country_name, region_code):
+def _create_response_list(neighborhood_list, country_name, region_code):
     city_name_list = []
 
     for city in neighborhood_list:
@@ -38,12 +38,23 @@ def create_response_list(neighborhood_list, country_name, region_code):
 
 def get_cities_neighbor(city_name, country_name, measurement, radius, region_code):
     try:
-        city = get_city(city_name, country_name, region_code)
+        city = _get_city(city_name, country_name, region_code)
         if city:
             distance = D(mi=radius) if measurement == 'miles' else D(km=radius)
             neighborhood_list = City.objects.filter(location__distance_lte=(city.location, distance))
-            return create_response_list(neighborhood_list, country_name, region_code)
+            return _create_response_list(neighborhood_list, country_name, region_code)
         return 0
     except Exception, e:
         return False
-        
+
+
+def get_zipcode_neighbor(zip_code, country_name, measurement, radius):
+    try:
+        zip_objs = PostalCode.objects.filter(code=zip_code, country__name=country_name)
+        if zip_objs:
+            distance = D(mi=radius) if measurement == 'miles' else D(km=radius)
+            neighborhood_list = PostalCode.objects.filter(location__distance_lte=(zip_objs[0].location, distance))
+            return [zip_obj.code for zip_obj in neighborhood_list]
+        return 0
+    except:
+        return False        

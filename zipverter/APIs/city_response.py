@@ -3,7 +3,7 @@ import re
 from tastypie import resources, fields
 from handler.models import LocationTable, LoggForLocationTable
 from handler.lazy_load import find_location_info
-from handler.helper import get_cities_neighbor
+from handler.helper import get_cities_neighbor, get_zipcode_neighbor
 from tastypie.authorization import Authorization
 from django.http import HttpResponse
 from tastypie.exceptions import ImmediateHttpResponse
@@ -157,6 +157,43 @@ class CitysNeighborhoodResource(resources.ModelResource):
                                             status=200
                                         ))
         error = 'No such city as {} found'.format(city_name) if neighbor_cities == 0 else 'Wrong radius format'
+        raise ImmediateHttpResponse(response=HttpResponse(
+                                            content=json.dumps({'error': error}),
+                                            status=400
+                                        ))
+
+class PostalCodeNeighborhoodResource(resources.ModelResource):
+
+    class Meta:
+        object_class = LocationTable
+        resource_name = 'zipneighbors'
+        fields = ['zip_code', 'country_name', 'measurement', 'radius']
+        allowed_methods = ['post']
+        authorization = Authorization()
+
+    def obj_create(self, bundle, request=None, **kwargs):
+        zip_code = bundle.data.get('zip_code', False)
+        country_name = bundle.data.get('country_name', False)
+        measurement = bundle.data.get('measurement', False)
+        radius = bundle.data.get('radius', False)
+
+        if not zip_code or not country_name or not measurement or not radius:
+            error = u'Uncompleted data: zip_code = {}, country_name = {} measurement = {} radius = {}'.format(
+                                                                                                        zip_code, 
+                                                                                                        country_name, 
+                                                                                                        measurement, 
+                                                                                                        radius)
+            raise ImmediateHttpResponse(response=HttpResponse(
+                                            content=json.dumps({'error': error}),
+                                            status=406
+                                        ))
+        neighbor_zip_code = get_zipcode_neighbor(zip_code, country_name, measurement, radius, region_code)
+        if isinstance(neighbor_zip_code, list):
+            raise ImmediateHttpResponse(response=HttpResponse(
+                                            content=json.dumps({'data': neighbor_zip_code}),
+                                            status=200
+                                        ))
+        error = 'No such postal code as {} found'.format(zip_code) if neighbor_zip_code == 0 else 'Wrong radius format'
         raise ImmediateHttpResponse(response=HttpResponse(
                                             content=json.dumps({'error': error}),
                                             status=400

@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from APIs.city_response import ZipTableResource, CitysNeighborhoodResource
+from APIs.city_response import ZipTableResource, CitysNeighborhoodResource, PostalCodeNeighborhoodResource
 from django.views.generic import TemplateView
 from handler.models import LoggForLocationTable
 from handler.views import LoggView
@@ -26,6 +26,7 @@ from tastypie.api import Api
 rest_api = Api(api_name='api')
 rest_api.register(ZipTableResource())
 rest_api.register(CitysNeighborhoodResource())
+rest_api.register(PostalCodeNeighborhoodResource())
 
 urlpatterns = [
     url(r'', include(rest_api.urls)),
