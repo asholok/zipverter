@@ -41,7 +41,7 @@ def get_cities_neighbor(city_name, country_name, measurement, radius, region_cod
         city = _get_city(city_name, country_name, region_code)
         if city:
             distance = D(mi=radius) if measurement == 'miles' else D(km=radius)
-            neighborhood_list = City.objects.filter(location__distance_lte=(city.location, distance))
+            neighborhood_list = City.objects.filter(location__distance_lte=(city.location, distance)).distinct()
             return _create_response_list(neighborhood_list, country_name, region_code)
         return 0
     except Exception, e:
@@ -53,7 +53,7 @@ def get_zipcode_neighbor(zip_code, country_name, measurement, radius):
         zip_objs = PostalCode.objects.filter(code=zip_code, country__name=country_name)
         if zip_objs:
             distance = D(mi=radius) if measurement == 'miles' else D(km=radius)
-            neighborhood_list = PostalCode.objects.filter(location__distance_lte=(zip_objs[0].location, distance))
+            neighborhood_list = PostalCode.objects.filter(location__distance_lte=(zip_objs[0].location, distance)).distinct()
             return [zip_obj.code for zip_obj in neighborhood_list]
         return 0
     except:
