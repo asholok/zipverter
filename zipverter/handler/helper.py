@@ -54,7 +54,7 @@ def get_zipcode_neighbor(zip_code, country_name, measurement, radius):
         if zip_objs:
             distance = D(mi=radius) if measurement == 'miles' else D(km=radius)
             neighborhood_list = PostalCode.objects.filter(location__distance_lte=(zip_objs[0].location, distance)).distinct()
-            return [zip_obj.code for zip_obj in neighborhood_list]
+            return list(set([zip_obj.code for zip_obj in neighborhood_list]))
         return 0
     except:
         return False        
