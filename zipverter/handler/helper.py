@@ -1,5 +1,5 @@
 # coding=utf-8
-from cities.models import City
+from cities.models import City, PostalCode
 from django.contrib.gis.measure import D
 from django.db.models import Q
 from handler.models import LocationTable
