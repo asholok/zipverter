@@ -187,7 +187,7 @@ class PostalCodeNeighborhoodResource(resources.ModelResource):
                                             content=json.dumps({'error': error}),
                                             status=406
                                         ))
-        neighbor_zip_code = get_zipcode_neighbor(zip_code, country_name, measurement, radius, region_code)
+        neighbor_zip_code = get_zipcode_neighbor(zip_code, country_name, measurement, radius)
         if isinstance(neighbor_zip_code, list):
             raise ImmediateHttpResponse(response=HttpResponse(
                                             content=json.dumps({'data': neighbor_zip_code}),
