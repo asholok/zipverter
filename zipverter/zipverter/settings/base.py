@@ -44,9 +44,10 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.gis',
+    'import_export',
+    'cities',
     'tastypie',
     'handler',
-    'cities',
     # 'debug_toolbar',
 )
 MIDDLEWARE_CLASSES = (

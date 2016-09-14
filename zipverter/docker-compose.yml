@@ -1,5 +1,5 @@
 django:
-  image: asholok/zip_project:latest
+  build: .
   command: python manage.py runserver 0.0.0.0:8000
   environment:
     RUN_ENV: "$RUN_ENV"

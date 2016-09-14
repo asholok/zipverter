@@ -4,6 +4,7 @@ from django.contrib.gis.measure import D
 from django.db.models import Q
 from handler.models import LocationTable
 from handler.constants import BRAZILIAN_STATE_CODES_REAL, BRAZILIAN_STATE_CODES_REVERCE
+import csv
 
 def _get_region_filter(country_name, region_code):
     if region_code:
@@ -58,3 +59,19 @@ def get_zipcode_neighbor(zip_code, country_name, measurement, radius):
         return 0
     except:
         return False        
+
+
+def get_cities_by_population(country_name, population_min, population_max=0):
+    city_filter = Q(country__name=country_name, population__gte=population_min)
+    if population_max:
+        city_filter &= Q(population__lte=population_max)
+    
+    cities = City.objects.filter(city_filter).order_by('population').values('name_std', 'name', 'population')
+    with open(country_name + '_cities_+' + str(population_min), 'wb') as file:
+        fieldnames = ['population', 'name', 'name_std']
+        writer = csv.DictWriter(file, fieldnames=fieldnames)
+
+        writer.writeheader()
+        for city in cities:
+            city['name'] = unicode(city['name']).encode("utf-8")
+            writer.writerow(city)

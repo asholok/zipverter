@@ -1,6 +1,7 @@
 django==1.8
 django-tastypie
 django-cities
+django-import-export==0.2.8
 psycopg2
 whitenoise
 gunicorn==19.1.1
