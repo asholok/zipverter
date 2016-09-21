@@ -5,11 +5,19 @@ from handler.admin_exporters import CityAdmin, RegionAdmin, CountryAdmin, Distri
 
 
 class CityAdmin(ExportMixin, admin.ModelAdmin):
-    list_display = ['name', 'name_std', 'country', 'population', 'region', 'timezone']
+    list_display = ['name', 'name_std', 'country', 'ru_name', 'population', 'region', 'timezone']
+    exclude = ('alt_names',)
     search_fields = ('country__name', 'name_std')
     list_filter = ['country']
     raw_id_fields = ['country', 'region']
     resource_class = CityAdmin
+
+    def ru_name(self, obj):
+        try:
+            return obj.alt_names.get(language='ru').name
+        except:
+            return 'N/A'
+
 
 class RegionAdmin(ExportMixin, admin.ModelAdmin):
     list_display = ['name', 'name_std', 'code', 'country']
@@ -17,10 +25,12 @@ class RegionAdmin(ExportMixin, admin.ModelAdmin):
     raw_id_fields = ['country']
     resource_class = RegionAdmin
 
+
 class CountryAdmin(ExportMixin, admin.ModelAdmin):
     list_display = ['name', 'population', 'languages', 'capital', 'currency_name', 'currency']
     search_fields = ('continent',)
     resource_class = CountryAdmin
+
 
 class DistrictAdmin(ExportMixin, admin.ModelAdmin):
     list_display = ['name', 'name_std', 'population', 'city']
