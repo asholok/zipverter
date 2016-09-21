@@ -5,7 +5,7 @@ from cities.models import City , Region, Country, District
 class CityAdmin(resources.ModelResource):
     class Meta:
         model = City
-        fields = ('name_std', 'country__name', 'population', 'region__name_std')
+        fields = ('name' ,'name_std', 'country__name', 'population', 'region__name_std', 'timezone')
     
 
 class RegionAdmin(resources.ModelResource):

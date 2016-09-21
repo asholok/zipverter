@@ -5,13 +5,14 @@ from handler.admin_exporters import CityAdmin, RegionAdmin, CountryAdmin, Distri
 
 
 class CityAdmin(ExportMixin, admin.ModelAdmin):
-    list_display = ['name_std', 'country', 'population', 'region', 'timezone']
+    list_display = ['name', 'name_std', 'country', 'population', 'region', 'timezone']
     search_fields = ('country__name', 'name_std')
+    list_filter = ['country']
     raw_id_fields = ['country', 'region']
     resource_class = CityAdmin
 
 class RegionAdmin(ExportMixin, admin.ModelAdmin):
-    list_display = ['name_std', 'code', 'country']
+    list_display = ['name', 'name_std', 'code', 'country']
     search_fields = ('country__name',)
     raw_id_fields = ['country']
     resource_class = RegionAdmin
@@ -22,7 +23,7 @@ class CountryAdmin(ExportMixin, admin.ModelAdmin):
     resource_class = CountryAdmin
 
 class DistrictAdmin(ExportMixin, admin.ModelAdmin):
-    list_display = ['name_std', 'population', 'city']
+    list_display = ['name', 'name_std', 'population', 'city']
     search_fields = ('city__name',)
     raw_id_fields = ['city']
     resource_class = DistrictAdmin
