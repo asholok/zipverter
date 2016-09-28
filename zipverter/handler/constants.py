@@ -32,3 +32,8 @@ BRAZILIAN_STATE_CODES_REVERCE = dict(zip(
                                     BRAZILIAN_STATE_CODES_REAL.values(),
                                     BRAZILIAN_STATE_CODES_REAL.keys()
                                 ))
+
+SUITABLE_CITY_NAMES = {
+    'Washington D.C.': 'Washington, D.C.',
+    'New York': 'New York City'
+}
