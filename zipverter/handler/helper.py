@@ -34,6 +34,7 @@ def _create_response_list(neighborhood_list, country_name, region_code):
     city_name_list = []
 
     for city in neighborhood_list:
+        print '--city.region.code--', city.region.code
         city_region_code = city.region.code
         if country_name == 'Brazil':
             city_region_code = BRAZILIAN_STATE_CODES_REVERCE[city_region_code]

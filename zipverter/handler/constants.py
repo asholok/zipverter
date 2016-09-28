@@ -34,6 +34,8 @@ BRAZILIAN_STATE_CODES_REVERCE = dict(zip(
                                 ))
 
 SUITABLE_CITY_NAMES = {
-    'Washington D.C.': 'Washington, D.C.',
-    'New York': 'New York City'
+    u'Washington D.C.': u'Washington, D.C.',
+    u'New York': u'New York City',
+    u'Ciudad de México': u'Mexico City',
+    u'Bielsko-Biała': u'Bielsko-Biala'
 }
