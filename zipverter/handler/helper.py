@@ -1,4 +1,6 @@
-# coding=utf-8
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 from cities.models import City, PostalCode
 from django.contrib.gis.measure import D
 from django.db.models import Q

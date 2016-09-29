@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 BRAZILIAN_STATE_CODES_REAL = {
     'AC': '01',
     'AL': '02',
