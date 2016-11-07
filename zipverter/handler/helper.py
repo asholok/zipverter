@@ -43,6 +43,8 @@ def _create_response_list(neighborhood_list, country_name, region_code):
     return city_name_list
 
 def get_cities_neighbor(city_name, country_name, measurement, radius, region_code):
+    if country_name == 'Mexico': # TODO: Delete this after Mexico database corrected
+        return []
     try:
         city = _get_city(city_name, country_name, region_code)
         if city:
