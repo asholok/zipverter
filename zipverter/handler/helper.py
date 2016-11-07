@@ -1,20 +1,25 @@
-# coding=utf-8
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 from cities.models import City, PostalCode
 from django.contrib.gis.measure import D
 from django.db.models import Q
 from handler.models import LocationTable
-from handler.constants import BRAZILIAN_STATE_CODES_REAL, BRAZILIAN_STATE_CODES_REVERCE
+from handler.constants import BRAZILIAN_STATE_CODES_REAL, BRAZILIAN_STATE_CODES_REVERCE, SUITABLE_CITY_NAMES
 import csv
 
 def _get_region_filter(country_name, region_code):
     if region_code:
         if country_name == 'Brazil':
-            region_code = BRAZILIAN_STATE_CODES_REAL[region_code]
-        return Q(region__code=region_code)
+            if region_code in BRAZILIAN_STATE_CODES_REAL:
+                return Q(region__code=BRAZILIAN_STATE_CODES_REAL[region_code])
+        if country_name == 'United States':
+            return Q(region__code=region_code)
     return Q()
 
 def _get_city(city_name, country_name, region_code):
     region_filter = _get_region_filter(country_name, region_code)
+    city_name = SUITABLE_CITY_NAMES[city_name] if city_name in SUITABLE_CITY_NAMES else city_name
     try:
         city_filter = Q(name=city_name, country__name=country_name)
         return City.objects.get(city_filter, region_filter)
