@@ -21,10 +21,10 @@ def _get_city(city_name, country_name, region_code):
     region_filter = _get_region_filter(country_name, region_code)
     city_name = SUITABLE_CITY_NAMES[city_name] if city_name in SUITABLE_CITY_NAMES else city_name
     try:
-        city_filter = Q(name=city_name, country__name=country_name)
+        city_filter = Q(name__iexact=city_name, country__name=country_name)
         return City.objects.get(city_filter, region_filter)
     except City.DoesNotExist:
-        city_filter = Q(name_std=city_name, country__name=country_name)
+        city_filter = Q(name_std__iexact=city_name, country__name=country_name)
         return City.objects.get(city_filter, region_filter)
     except City.MultipleObjectsReturned:
         return City.objects.filter(city_filter, region_filter).order_by('-population')[0]
@@ -35,7 +35,7 @@ def _get_city(city_name, country_name, region_code):
 def _create_response_list(neighborhood_list, country_name, region_code):
     city_name_list = []
 
-    for city in neighborhood_list:
+    for city in neighborhood_list.filter(country__name=country_name): # for a case if radius crossed the border 
         city_region_code = city.region.code
         if country_name == 'Brazil':
             city_region_code = BRAZILIAN_STATE_CODES_REVERCE[city_region_code]
@@ -43,6 +43,8 @@ def _create_response_list(neighborhood_list, country_name, region_code):
     return city_name_list
 
 def get_cities_neighbor(city_name, country_name, measurement, radius, region_code):
+    if country_name == 'Mexico': # TODO: Delete this after Mexico database corrected
+        return []
     try:
         city = _get_city(city_name, country_name, region_code)
         if city:
