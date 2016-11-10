@@ -3,11 +3,13 @@
 import json
 import re
 from tastypie import resources, fields
+from tastypie.constants import ALL
 from handler.models import LocationTable, LoggForLocationTable
 from handler.lazy_load import find_location_info
 from handler.helper import get_cities_neighbor, get_zipcode_neighbor
 from tastypie.authorization import Authorization
 from django.http import HttpResponse
+from cities.models import City, District
 from tastypie.exceptions import ImmediateHttpResponse
 
 SUBINFOCOUNTRIES = ['United States', 'Brazil']
@@ -200,3 +202,48 @@ class PostalCodeNeighborhoodResource(resources.ModelResource):
                                             content=json.dumps({'error': error}),
                                             status=400
                                         ))
+
+class CitiesResource(resources.ModelResource):
+    alias = fields.CharField(null=True)
+    
+    class Meta:
+        queryset = City.objects.all()
+        resource_name = 'country_cities'
+        allowed_methods = ['get']
+        limit = 0
+        authorization = Authorization()
+        filtering = {'country': ALL}
+
+    def obj_get_list(self, bundle, **kwargs):
+        cities = super(CitiesResource, self).obj_get_list(bundle, **kwargs)
+        cities = cities.filter(country__name=bundle.request.GET.get('country',''))
+        return sorted(cities, key=lambda x: x.population)
+
+    def dehydrate_alias(self, bundle):
+        return re.sub(r'[().,*\'"]', '', bundle.data['name']).replace(" ", "-")
+
+    def dehydrate_region(self, bundle):
+        return bundle.data['region'].name
+
+
+class DistrictResource(resources.ModelResource):
+    class Meta:
+        queryset = District.objects.all()
+        resource_name = 'city_district'
+        allowed_methods = ['get']
+        limit = 0
+        authorization = Authorization()
+
+    def obj_get_list(self, bundle, **kwargs):
+        districts = super(DistrictResource, self).obj_get_list(bundle, **kwargs)
+        country = bundle.request.GET.get('country','')
+        city_slug = bundle.request.GET.get('city_slug','')
+        region = bundle.request.GET.get('region','')
+        try:
+            city = City.objects.get(country__name=country, slug=city_slug)
+        except City.MultipleObjectsReturned:
+            city = City.objects.get(country__name=country, slug=city_slug, region__name=region)
+        except Exception, e:
+            return districts.filter(city__name='')
+
+        return districts.filter(city=city)
