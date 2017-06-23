@@ -221,6 +221,12 @@ class CitiesResource(resources.ModelResource):
         return sorted(cities, key=lambda x: x.population)
 
     def dehydrate_alias(self, bundle):
+        try:
+            language = bundle.request.GET.get('language','')
+            if language:
+                bundle.data[language+'_name'] = bundle.obj.alt_names.get(language=language).name
+        except:
+            pass
         return re.sub(r'[().,*\'"]', '', bundle.data['name']).replace(" ", "-")
 
     def dehydrate_region(self, bundle):
